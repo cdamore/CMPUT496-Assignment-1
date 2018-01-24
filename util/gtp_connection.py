@@ -37,6 +37,7 @@ class GtpConnection():
         self.komi = 0
         self.board = board
         self.commands = {
+            "score": self.score_cmd,
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,
             "name": self.name_cmd,
@@ -176,6 +177,77 @@ class GtpConnection():
         """ Quit game and exit the GTP interface """
         self.respond()
         exit()
+        
+    def score_cmd(self, args):
+        """Calculate the score of the current board state"""
+        #replicate current board state
+        goBoard = self.board.get_twoD_board()
+        print('Current Go board state:')
+        print(goBoard)
+        # initailize score and correct it for komi (+ score means black wins, - score means white wins)
+        score = -(self.komi)
+        row_num = 0
+        #for each spot on the board, if white stone: score--, if black stone: score++, 
+        #if no stone: call recusive function checkEmptys()
+        for row in goBoard:
+            num_count = 0
+            for num in row:
+                if (num == 1):
+                    score += 1
+                elif (num == 2):
+                    score -= 1
+                elif (num == 0):
+                    self.checkEmptys(goBoard, row_num, num_count, 'i', 0)
+                num_count += 1
+            row_num += 1
+        print('score: ' + str(score))
+        print('go board result, -1 means that area was 0 and has been traversed')
+        print(goBoard)
+        
+    def checkEmptys(self, goBoard, row, num, color, count):
+        #Get possible moves from the position of empty spot called
+        pos_moves = self.getPossibleMoves(row, num)
+        #Set current board position to -1 so it doesn't get double counted 
+        goBoard[row][num] = -1
+        empty_pos = []
+        print('possible moves for point (' + str(num) + ', ' + str(row) + '): '  + str(pos_moves))
+        #For each move in the possible moves, 'b' means it is black territory, 'w' means it is in white territoty, and 'n' means it is in neutral terriorty becasue it has both a white and a black stone surronding it. 'i' is the init value when the function is first called. 
+        for moves in pos_moves:
+            #This code is to keep track of the territory 
+            if (color != 'n'):
+                if (goBoard[moves[1]][moves[0]] == 1):
+                    if (color == 'w'): 
+                        color = 'n'
+                    else:
+                        color = 'b'
+                elif (goBoard[moves[1]][moves[0]] == 2):
+                    if (color == 'b'):
+                        color = 'n'
+                    else:
+                        color = 'w'
+            #If one of the possible moves is another empty spot, then add it to a list that has to be recursivly called
+            if (goBoard[moves[1]][moves[0]] == 0):
+                empty_pos.append(moves)
+            #Get len of the empty posiitons next to the current position
+            empty_pos_len = len(empty_pos)
+            
+            #The return values with the recursive calling needs to be done here. There needs to be 4 instances of calls. 1 if there are no other surronding empty spots, 1 if there is a single surronding empty spot, 2 if there is 2, 3 if there is 3, and 4 if there is 4. I tried to implement but got a error, will try again tomorrow.
+                    
+        print('points to be recursivly called: ' + str(empty_pos))
+        print('current color of territory: ' + color)
+        
+    def getPossibleMoves(self, row, num):
+        pos_moves = []
+        if num > 0:
+            pos_moves.append([num-1, row])
+        if row > 0:
+            pos_moves.append([num, row-1])
+        if num < self.board.size-1:
+            pos_moves.append([num+1, row])
+        if row < self.board.size-1:
+            pos_moves.append([num, row+1])
+        return pos_moves
+              
 
     def name_cmd(self, args):
         """ Return the name of the player """
@@ -348,4 +420,3 @@ class GtpConnection():
             self.respond(board_move)
         except Exception as e:
             self.respond('Error: {}'.format(str(e)))
-
