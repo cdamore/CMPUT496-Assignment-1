@@ -182,12 +182,12 @@ class GtpConnection():
         """Calculate the score of the current board state"""
         #replicate current board state
         goBoard = self.board.get_twoD_board()
-        print('Current Go board state:')
-        print(goBoard)
+        #print('Current Go board state:')
+        #print(goBoard)
         # initailize score and correct it for komi (+ score means black wins, - score means white wins)
         score = -(self.komi)
         row_num = 0
-        total = []
+        self.total = []
         #for each spot on the board, if white stone: score--, if black stone: score++, 
         #if no stone: call recusive function checkEmptys()
         for row in goBoard:
@@ -200,15 +200,72 @@ class GtpConnection():
                 elif (num == 0):
                     #add total = (self.che...)
                     cur_color = self.checkEmptys(goBoard, row_num, num_count, 'i', 0)
-                    total.append([row_num, num_count, cur_color])
+                    self.total.append([row_num, num_count, cur_color, False])
                 num_count += 1
             row_num += 1
-        for item in total:
-            print(item)
-        print('score: ' + str(score))
-       #print('go board result, -1 means that area was 0 and has been traversed')
-       # print(goBoard)
+            
+        sections = []
+        self.sections_index = 0
         
+        for empty_spot in self.total:
+            if (empty_spot[3] == False):
+                empty_spot[3] = True
+                self.s_list = []
+                self.s_list.append(empty_spot)
+                self.calculateEmptys(empty_spot)
+                sections.append(self.s_list)
+         
+        """for emptys in sections:
+            print(emptys)"""
+            
+        for emptys in sections:
+            cur_len = len(emptys)
+            territory_color = self.get_territory(emptys)
+            if (territory_color == 'b'):
+                score = score + cur_len 
+            if (territory_color == 'w'):
+                score = score - cur_len 
+            #print("color: " + str(territory_color) + ", score: " + str(cur_len))
+               
+                        
+        #print('score: ' + str(score))
+        
+        if (score == 0):
+            print("= 0")
+        elif (score > 0):
+            print("= B+" + str(score))
+        elif (score < 0):
+            print("= W+" + str(abs(score)))
+            
+       
+    def get_territory(self, emptys):
+        cur_color = emptys[0][2]
+        for item in emptys:
+            if (cur_color != 'n'): 
+                if (item[2] == 'b'):
+                    if (cur_color == 'w'):
+                        cur_color = 'n'
+                    else:
+                        cur_color = 'b'
+                elif (item[2] == 'w'):
+                    if (cur_color == 'b'):
+                        cur_color = 'n'
+                    else:
+                        cur_color = 'w'
+        return cur_color
+    
+    def calculateEmptys(self, empty_spot):
+        for empty_spot2 in self.total:
+            if (empty_spot2[3] == False):
+                if (empty_spot[1] == empty_spot2[1] and abs(empty_spot[0] - empty_spot2[0]) == 1):
+                    empty_spot2[3] = True
+                    self.s_list.append(empty_spot2)
+                    self.calculateEmptys(empty_spot2)
+                if (empty_spot[0] == empty_spot2[0] and abs(empty_spot[1] - empty_spot2[1]) == 1):
+                    empty_spot2[3] = True
+                    self.s_list.append(empty_spot2)
+                    self.calculateEmptys(empty_spot2)
+                    
     def checkEmptys(self, goBoard, row, num, color, count):
         #Get possible moves from the position of empty spot called
         pos_moves = self.getPossibleMoves(row, num)
@@ -229,9 +286,6 @@ class GtpConnection():
                         color = 'n'
                     else:
                         color = 'w'
-            
-            #The return values with the recursive calling needs to be done here. There needs to be 4 instances of calls. 1 if there are no other surronding empty spots, 1 if there is a single surronding empty spot, 2 if there is 2, 3 if there is 3, and 4 if there is 4. I tried to implement but got a error, will try again tomorrow.
-                    
 
         return color 
         
