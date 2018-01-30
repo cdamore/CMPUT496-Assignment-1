@@ -1,4 +1,3 @@
-# CMPUT496-Assignment-1
 CMPUT 496 Assignment1
 
 In this assignment, you extend a copy of our Go1 program from class by adding a scoring function. A scoring function is called after a game ends. It determines who won the game, and by how many points. The main steps are:
@@ -11,6 +10,7 @@ In this assignment, you extend a copy of our Go1 program from class by adding a 
 Designated submitter:  
 
 Group members    Name & Student ID:
-Colin D'Amore       1502819
-Brad Hanasyk        1301531
+Colin D'Amore       cdamore
+Brad Hanasyk        hanasyk1
 Peixuan Li          peixuan1
+
