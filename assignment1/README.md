@@ -14,11 +14,11 @@ In this assignment, you extend a copy of our Go1 program from class by adding a 
 
 Designated submitter: Brad Hanasyk 
 
-Group members    Name & Student ID:
+Group Members Name & Student ID:
 
-Brad Hanasyk        1301531
+Brad Hanasyk:        1301531
 
-Colin D'Amore       1502819
+Colin D'Amore:       1502819
 
-Peixuan Li          peixuan1
+Peixuan Li:          peixuan1
 
