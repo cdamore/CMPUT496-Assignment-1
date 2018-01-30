@@ -16,9 +16,9 @@ Designated submitter: Brad Hanasyk
 
 Group members    Name & Student ID:
 
-Colin D'Amore       1502819
-
 Brad Hanasyk        1301531
+
+Colin D'Amore       1502819
 
 Peixuan Li          peixuan1
 
