@@ -7,9 +7,9 @@ In this assignment, you extend a copy of our Go1 program from class by adding a 
 4.Combine the counts of both players, plus the komi, to compute the score of the game.
 5.Implement a new GTP command score for the Go1 player, which computes the score as above, and prints it in a human readable format as specified below.
 
-Designated submitter:  
+Designated submitter: Brad Hanasyk
 
 Group members    Name & Student ID:
-Colin D'Amore       1502819
 Brad Hanasyk        1301531
+Colin D'Amore       1502819
 Peixuan Li          peixuan1
